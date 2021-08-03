@@ -10,6 +10,8 @@ public class MainClass extends JFrame {
 
     Color backColor;
 
+    GameArea game;
+
     final KeyboardListener keyInput = new KeyboardListener();
 
     private MainClass(){
@@ -48,6 +50,8 @@ public class MainClass extends JFrame {
 
         ProjectSettings.setCanvas(this.renderySpot);
 
+        game = new GameArea(this);
+
         final Thread gameThread = new Thread(this::gameLoop);
         gameThread.setDaemon(true);
         gameThread.start();
@@ -72,11 +76,14 @@ public class MainClass extends JFrame {
     }
 
     public void update(){
+        game.update(10);
     }
 
     public void render(){
         final Graphics2D g = (Graphics2D) renderySpot.getBufferStrategy().getDrawGraphics();
         g.setColor(backColor);
+
+        game.render(g);
 
         renderySpot.getBufferStrategy().show();
     }
