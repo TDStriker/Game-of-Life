@@ -1,5 +1,6 @@
 package code;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,62 +8,59 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
+import java.io.File;
 
-public class GameArea implements GameObject, ActionListener, MouseListener {
+public class GameArea implements GameObject, MouseListener {
     boolean[][] grid;
-
-    boolean running = false;
 
     private int border = 4;
     private int heightOffset = 7;
 
-    private JButton playButton;
-    private JButton pauseButton;
+    GameHUD controls;
 
-    public GameArea(JFrame frame){
-        grid = new boolean[30][30];
+    public GameArea(GameHUD controls){
+        grid = new boolean[64][64];
 
-        playButton = new JButton("Play");
-        pauseButton = new JButton("Pause");
+        this.controls = controls;
 
-        playButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        playButton.setForeground(Color.white);
-        playButton.setFont(new Font("Comic Sans MS", (Font.BOLD), 16));
-        //TODO: Get actual x & y vals
-        playButton.setBounds(grid.length * ProjectSettings.SQUARE_LENGTH + 50, 50, 120, 80);
-        playButton.setActionCommand("play");
-        playButton.setBackground(Color.red);
-        playButton.setFocusable(false);
-        playButton.addActionListener(this);
-        playButton.setVisible(false);
-        frame.add(playButton);
+        ProjectSettings.addMouseHandler(this);
+    }
 
-        pauseButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        pauseButton.setForeground(Color.white);
-        pauseButton.setFont(new Font("Comic Sans MS", (Font.BOLD), 16));
-        //TODO: Get actual x & y val
-        pauseButton.setBounds(grid.length * ProjectSettings.SQUARE_LENGTH + 50, 150, 120, 80);
-        pauseButton.setActionCommand("pause");
-        pauseButton.setBackground(Color.red);
-        pauseButton.setFocusable(false);
-        pauseButton.addActionListener(this);
-        pauseButton.setVisible(false);
-        frame.add(pauseButton);
+    private int countAdjacent(int x, int y){
+        int adjacent = 0;
+        for(int i = -1; i < 2; i++){
+            for(int j = -1; j < 2; j++){
+                try {
+                    if (grid[x + i][y + j]) {
+                        adjacent++;
+                    }
+                }catch(ArrayIndexOutOfBoundsException borderBreach){
+                }
+            }
+        }
+        return adjacent;
     }
 
     @Override
     public void update(int timePassed) {
-        playButton.setVisible(true);
-        pauseButton.setVisible(true);
-        if(running){
-            for(int i = 0; i < grid.length; i++){
-                for(int j = 0; j < grid.length; j++){
-                    if(grid[j][i]){
-
-                    }else{
-
+        if(controls.isReset()) {
+            grid = new boolean[64][64];
+        }else{
+            if (controls.isRunning()) {
+                boolean[][] newGrid = new boolean[64][64];
+                for (int i = 0; i < grid.length; i++) {
+                    for (int j = 0; j < grid.length; j++) {
+                        int adjacent = countAdjacent(i, j);
+                        if (grid[i][j] && (adjacent < 3 || adjacent > 4)) {
+                            newGrid[i][j] = false;
+                        } else if (adjacent == 3) {
+                            newGrid[i][j] = true;
+                        } else {
+                            newGrid[i][j] = grid[i][j];
+                        }
                     }
                 }
+                grid = newGrid;
             }
         }
     }
@@ -92,23 +90,15 @@ public class GameArea implements GameObject, ActionListener, MouseListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if("Play".equals(e.getActionCommand())) {
-            System.out.println("Running");
-            running = true;
-        }else if("Pause".equals(e.getActionCommand())){
-            System.out.println("Paused");
-            running = false;
-        }
-    }
-
-    @Override
     public void mouseClicked(MouseEvent e) {
         int x = (e.getX() - (border*3))/ProjectSettings.SQUARE_LENGTH;
         int y = (e.getY() - (border*3))/ProjectSettings.SQUARE_LENGTH;
 
         if(x < grid.length && y < grid.length){
-            grid[y][x] = !grid[y][x];
+            grid[x][y] = !grid[x][y];
+            System.out.println("thing should happen");
+        }else{
+            System.out.println("whoops");
         }
     }
 

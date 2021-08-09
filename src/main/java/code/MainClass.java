@@ -10,7 +10,11 @@ public class MainClass extends JFrame {
 
     Color backColor;
 
+    int refreshRate = 300;
+
     GameArea game;
+
+    GameHUD controls;
 
     final KeyboardListener keyInput = new KeyboardListener();
 
@@ -19,6 +23,8 @@ public class MainClass extends JFrame {
         renderySpot.setMinimumSize(ProjectSettings.DIM);
         renderySpot.setMaximumSize(ProjectSettings.DIM);
         renderySpot.setPreferredSize(ProjectSettings.DIM);
+
+        controls = new GameHUD(this);
 
         this.add(renderySpot);
         this.setResizable(false);
@@ -46,11 +52,10 @@ public class MainClass extends JFrame {
         this.renderySpot.createBufferStrategy(2);
         this.renderySpot.requestFocus();
         this.renderySpot.addKeyListener(keyInput);
-//        this.renderySpot.addMouseListener(mouseInput);
 
         ProjectSettings.setCanvas(this.renderySpot);
 
-        game = new GameArea(this);
+        game = new GameArea(controls);
 
         final Thread gameThread = new Thread(this::gameLoop);
         gameThread.setDaemon(true);
@@ -66,7 +71,7 @@ public class MainClass extends JFrame {
             update();
 
             try {
-                Thread.sleep(Math.max(0, 10 - (System.currentTimeMillis() - startTime)));
+                Thread.sleep(Math.max(0, refreshRate - (System.currentTimeMillis() - startTime)));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -76,7 +81,8 @@ public class MainClass extends JFrame {
     }
 
     public void update(){
-        game.update(10);
+        game.update(refreshRate);
+        refreshRate = Math.max(10, controls.getRefreshRate());
     }
 
     public void render(){

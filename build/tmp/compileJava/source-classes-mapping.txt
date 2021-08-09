@@ -1,11 +1,13 @@
 Utilities/ResettableKeyHandler.java
  Utilities.ResettableKeyHandler
-code/ProjectSettings.java
- code.ProjectSettings
-Utilities/KeyboardListener.java
- Utilities.KeyboardListener
 code/GameObject.java
  code.GameObject
+Utilities/KeyboardListener.java
+ Utilities.KeyboardListener
+code/ProjectSettings.java
+ code.ProjectSettings
+code/GameHUD.java
+ code.GameHUD
 code/MainClass.java
  code.MainClass
 code/GameArea.java

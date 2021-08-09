@@ -3,11 +3,12 @@ package code;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 
 public class ProjectSettings {
     public static Dimension DIM = new Dimension(1000, 800);
 
-    public static int SQUARE_LENGTH = 25;
+    public static int SQUARE_LENGTH = 12;
 
     public static int LEFT_KEY = KeyEvent.VK_LEFT;
     public static int RIGHT_KEY = KeyEvent.VK_RIGHT;
@@ -23,5 +24,9 @@ public class ProjectSettings {
 
     public static void addKeyHandler(KeyListener handler){
         CANVAS.addKeyListener(handler);
+    }
+
+    public static void addMouseHandler(MouseListener handler){
+        CANVAS.addMouseListener(handler);
     }
 }
