@@ -1,17 +1,13 @@
 package code;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
-import java.io.File;
 
 public class GameArea implements GameObject, MouseListener {
     boolean[][] grid;
+    boolean[][] prev;
 
     private int border = 4;
     private int heightOffset = 7;
@@ -20,6 +16,7 @@ public class GameArea implements GameObject, MouseListener {
 
     public GameArea(GameHUD controls){
         grid = new boolean[64][64];
+        prev = new boolean[64][64];
 
         this.controls = controls;
 
@@ -30,11 +27,20 @@ public class GameArea implements GameObject, MouseListener {
         int adjacent = 0;
         for(int i = -1; i < 2; i++){
             for(int j = -1; j < 2; j++){
-                try {
-                    if (grid[x + i][y + j]) {
-                        adjacent++;
-                    }
-                }catch(ArrayIndexOutOfBoundsException borderBreach){
+                int xPos = x + i;
+                int yPos = y + j;
+                if(xPos < 0){
+                    xPos += grid.length;
+                }else if (xPos>=grid.length){
+                    xPos -= grid.length;
+                }
+                if(yPos < 0){
+                    yPos += grid.length;
+                }else if (yPos>=grid.length){
+                    yPos -= grid.length;
+                }
+                if (grid[xPos][yPos]) {
+                    adjacent++;
                 }
             }
         }
@@ -43,24 +49,30 @@ public class GameArea implements GameObject, MouseListener {
 
     @Override
     public void update(int timePassed) {
-        if(controls.isReset()) {
+        if(controls.isCleared()) {
             grid = new boolean[64][64];
         }else{
-            if (controls.isRunning()) {
+            if(controls.isJustStarted()){
+                prev = grid;
+            }
+            if(controls.isRunning()) {
                 boolean[][] newGrid = new boolean[64][64];
-                for (int i = 0; i < grid.length; i++) {
-                    for (int j = 0; j < grid.length; j++) {
+                for(int i = 0; i < grid.length; i++) {
+                    for(int j = 0; j < grid.length; j++) {
                         int adjacent = countAdjacent(i, j);
-                        if (grid[i][j] && (adjacent < 3 || adjacent > 4)) {
+                        if(grid[i][j] && (adjacent < 3 || adjacent > 4)) {
                             newGrid[i][j] = false;
-                        } else if (adjacent == 3) {
+                        }else if (adjacent == 3) {
                             newGrid[i][j] = true;
-                        } else {
+                        }else{
                             newGrid[i][j] = grid[i][j];
                         }
                     }
                 }
                 grid = newGrid;
+            }
+            if(controls.isReset()){
+                grid = prev;
             }
         }
     }

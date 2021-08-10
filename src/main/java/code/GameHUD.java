@@ -7,10 +7,13 @@ import java.awt.event.ActionListener;
 
 public class GameHUD implements ActionListener {
     private boolean isRunning;
+    private boolean isCleared;
     private boolean isReset;
+    private boolean justStarted;
 
     JButton playButton;
     JButton pauseButton;
+    JButton clearButton;
     JButton resetButton;
 
     JSlider refreshRate;
@@ -18,15 +21,17 @@ public class GameHUD implements ActionListener {
     ImageIcon buttonBackground;
 
     public GameHUD(JFrame frame){
-
         this.isRunning = false;
+        this.isCleared = false;
         this.isReset = false;
+        this.justStarted = false;
 
         buttonBackground = new ImageIcon("src/main/java/assets/images/Baton.png");
 
         playButton = new JButton("Play", buttonBackground);
         pauseButton = new JButton("Pause", buttonBackground);
-        resetButton = new JButton("Clear", buttonBackground);
+        clearButton = new JButton("Clear", buttonBackground);
+        resetButton = new JButton("Reset", buttonBackground);
 
         playButton.setHorizontalTextPosition(SwingConstants.CENTER);
         playButton.setForeground(Color.white);
@@ -50,11 +55,22 @@ public class GameHUD implements ActionListener {
         pauseButton.setVisible(true);
         frame.add(pauseButton);
 
+        clearButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        clearButton.setForeground(Color.white);
+        clearButton.setFont(new Font("Comic Sans MS", (Font.BOLD), 16));
+        clearButton.setBounds(790, 125, 100, 100);
+        clearButton.setActionCommand("Clear");
+        clearButton.setBackground(Color.red);
+        clearButton.setFocusable(false);
+        clearButton.addActionListener(this);
+        clearButton.setVisible(true);
+        frame.add(clearButton);
+
         resetButton.setHorizontalTextPosition(SwingConstants.CENTER);
         resetButton.setForeground(Color.white);
         resetButton.setFont(new Font("Comic Sans MS", (Font.BOLD), 16));
-        resetButton.setBounds(790, 125, 100, 100);
-        resetButton.setActionCommand("Clear");
+        resetButton.setBounds(895, 125, 100, 100);
+        resetButton.setActionCommand("Reset");
         resetButton.setBackground(Color.red);
         resetButton.setFocusable(false);
         resetButton.addActionListener(this);
@@ -74,10 +90,22 @@ public class GameHUD implements ActionListener {
         return isRunning;
     }
 
+    public boolean isCleared(){
+        boolean clear = isCleared;
+        isCleared = false;
+        return clear;
+    }
+
     public boolean isReset(){
         boolean reset = isReset;
         isReset = false;
         return reset;
+    }
+
+    public boolean isJustStarted(){
+        boolean start = justStarted;
+        justStarted = false;
+        return start;
     }
 
     public int getRefreshRate(){
@@ -88,12 +116,16 @@ public class GameHUD implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if("Play".equals(e.getActionCommand())) {
             System.out.println("Running");
+            justStarted = true;
             isRunning = true;
         }else if("Pause".equals(e.getActionCommand())){
             System.out.println("Paused");
             isRunning = false;
         }else if("Clear".equals(e.getActionCommand())){
             System.out.println("Cleared");
+            isCleared = true;
+        }else if("Reset".equals(e.getActionCommand())){
+            System.out.println("Reset");
             isReset = true;
         }
     }
