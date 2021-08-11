@@ -77,7 +77,7 @@ public class GameHUD implements ActionListener {
         resetButton.setVisible(true);
         frame.add(resetButton);
 
-        refreshRate = new JSlider(JSlider.HORIZONTAL, 0, 1000, 350);
+        refreshRate = new JSlider(JSlider.HORIZONTAL, 0, 1000, 200);
         refreshRate.setBounds(790, 225, 205,50);
         refreshRate.setMajorTickSpacing(200);
         refreshRate.setMinorTickSpacing(50);

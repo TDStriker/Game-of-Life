@@ -9,8 +9,8 @@ public class GameArea implements GameObject, MouseListener {
     boolean[][] grid;
     boolean[][] prev;
 
-    private int border = 4;
-    private int heightOffset = 7;
+    private final int border = 4;
+    private final int heightOffset = 7;
 
     GameHUD controls;
 
@@ -103,6 +103,11 @@ public class GameArea implements GameObject, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         int x = (e.getX() - (border*3))/ProjectSettings.SQUARE_LENGTH;
         int y = (e.getY() - (border*3))/ProjectSettings.SQUARE_LENGTH;
 
@@ -112,11 +117,6 @@ public class GameArea implements GameObject, MouseListener {
         }else{
             System.out.println("whoops");
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
     }
 
     @Override

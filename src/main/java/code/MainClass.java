@@ -10,7 +10,7 @@ public class MainClass extends JFrame {
 
     Color backColor;
 
-    int refreshRate = 300;
+    int refreshRate = 200;
 
     GameArea game;
 
